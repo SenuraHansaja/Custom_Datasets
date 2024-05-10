@@ -6,7 +6,7 @@ import torchvision
 from pathlib import Path
 from torchvision import transforms
 from data_setup import create_dataloaders
-
+from torch import nn
 device = 'mps'
 
 data_path = Path('data/')
@@ -38,6 +38,28 @@ rain_dataloader, test_dataloader, class_name = create_dataloaders(train_dir=trai
                                                                    batch_size=32)
 
 model = torchvision.models.efficientnet_b0(weights=weights).to(device)  ##this is the standard new method of using the pretrained model to load the model
+## becasue the pretrained is depricated so will be moved
+
+# summary(model=model, 
+#         input_size = (32, 3, 224, 224),
+#         col_names = ['input_size', 'output_size', 'num_params', 'trainable'],
+#         col_width = 20,
+#         row_setting = ['var_names'])
 
 
+for param in model.features.parameter():
+    param.requires_grad = False
+
+torch.manual_seed(42)
+torch.cuda.manual_seed(42)
+
+output_shape = 3
+
+model.classifier = torch.nn.Sequential(
+    torch.nn.Dropout(p=0.2, inplace = True),
+    torch.nn.Linear(in_feature=1200, 
+                    out_feature = output_shape,
+                    bias = True)).to(device)
+
+loss = nn.CrossEntropyLoss()
 
