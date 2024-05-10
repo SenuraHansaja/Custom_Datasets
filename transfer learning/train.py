@@ -7,6 +7,7 @@ from pathlib import Path
 from torchvision import transforms
 from data_setup import create_dataloaders
 from torch import nn
+
 device = 'mps'
 
 data_path = Path('data/')
@@ -47,7 +48,7 @@ model = torchvision.models.efficientnet_b0(weights=weights).to(device)  ##this i
 #         row_setting = ['var_names'])
 
 
-for param in model.features.parameter():
+for param in model.features.parameters():
     param.requires_grad = False
 
 torch.manual_seed(42)
@@ -57,9 +58,36 @@ output_shape = 3
 
 model.classifier = torch.nn.Sequential(
     torch.nn.Dropout(p=0.2, inplace = True),
-    torch.nn.Linear(in_feature=1200, 
-                    out_feature = output_shape,
+    torch.nn.Linear(in_features=1200, 
+                    out_features = output_shape,
                     bias = True)).to(device)
 
-loss = nn.CrossEntropyLoss()
+loss_fn = nn.CrossEntropyLoss()
+optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+
+EPOCH = 10
+
+for i in range(EPOCH):
+    train_loss, train_acc  = 0.0, 0.0
+    for batch, X, y in train_dataloader:
+        X, y = X.to(device), y.to(device)
+
+        model.train()
+        y_pred = model(X)
+        loss = loss_fn(y_pred, y)
+        train_loss += loss.item()
+
+        optimizer.zero_grad()
+        loss.backward()
+
+        optimizer.step()
+
+        y_pred_classed = torch.argmax(torch.softmax(y_pred, dim=1), dim=1)
+        train_acc += (y_pred == y).sum().item() / len(y_pred)
+
+## to get teh average loss
+    train_loss = train_loss /len(train_dataloader)
+    train_acc = train_acc / len(train_dataloader)
+
+    print(f"the train loss - {train_loss} & the train accuracy is {train_acc}")
 
