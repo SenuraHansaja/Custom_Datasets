@@ -14,4 +14,8 @@ except:
 
 ## importing the previous data and function calls
 try :
-    from modular Development import data_setup, engine
+    import train
+    import engine
+
+except:
+    print("couldn't load the dependencies")
