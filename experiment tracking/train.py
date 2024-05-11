@@ -19,3 +19,11 @@ try :
 
 except:
     print("couldn't load the dependencies")
+    
+
+device = "cuda" if torch.cuda.is_available() else "cpu"
+
+if device == 'cuda':
+    pass
+else:
+    raise Exception("Cuda doesn't exist.!")
