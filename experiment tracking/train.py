@@ -118,7 +118,7 @@ def train (model : torch.nn.Module,
            optimizer : torch.optim.Optimizer,
            loss_fn : torch.nn.Module,
            epochs  : int,
-           device : torch.device = 'cuda') -> Dict[str, list]:
+           device : torch.device) -> Dict[str, list]:
     
     """ takes the model and the daataloader and test dataloader , and optimizer and the loss function nd the number of epochs along with the deivce
     and then return the dictionary containing the train loss and test loss and trai acc and test acc"""
@@ -156,12 +156,34 @@ def train (model : torch.nn.Module,
     
     
     
-results = train(model.to(device), 
-                train_dataloader=train_dataloader,
-                test_dataloader=test_dataloader,
-                optimizer=optimizer,
-                loss_fn=loss_fn,
-                epochs=5,
-                device=device)
+# results = train(model.to('cuda'), 
+#                 train_dataloader=train_dataloader,
+#                 test_dataloader=test_dataloader,
+#                 optimizer=optimizer,
+#                 loss_fn=loss_fn,
+#                 epochs=10,
+#                 device='cuda')
 
-print(results['test_acc'])
+# print(results['test_acc'])
+
+
+EPOCHS = 5
+results  = {'train_loss': [],
+                'test_loss':  [],
+                'train_acc' : [],
+                'test_acc' : []}
+for epoch in range(EPOCHS):
+    train_loss, train_acc = train_step(model=model, dataloader=train_dataloader, loss_fn=loss_fn, optimizer=optimizer,
+                                           devise=device)
+        
+    test_loss, test_acc = test_step(model=model, dataloader=test_dataloader, loss_fn=loss_fn, device=device)
+    
+    
+    
+    
+    results["train_loss"].append(train_loss)
+    results["train_acc"].append(train_acc)
+    results["test_loss"].append(test_loss)
+    results["test_acc"].append(test_acc)
+    print(f"Epoch {epoch} Train Loss - {train_loss} : Train acc - {train_acc} : Test loss {test_loss} test acc {test_acc}")
+
