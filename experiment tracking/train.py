@@ -5,7 +5,7 @@ import torchvision
 from torch import nn
 from torchvision import transforms
 
-## try to get the torch info installed to the code
+# ## try to get the torch info installed to the code
 try :
     import torchinfo
 except:
@@ -23,7 +23,7 @@ except:
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
-if device == 'cuda':
-    pass
-else:
-    raise Exception("Cuda doesn't exist.!")
+if device != 'cuda':
+    device = "mps"
+
+print(f'[INFO] the model use - {device}')
