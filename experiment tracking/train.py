@@ -72,3 +72,39 @@ train_dataloader, test_dataloader, classes = create_dataloaders(train_dir=train_
                                                                 batch_size= BATCH_SIZE,
                                                                 num_workers=NUM_WORKER)
 
+##downloading the efficient net pretrained model
+
+model = torchvision.models.efficientnet_b0(weights=weights).to(device)
+
+## changing the output head of the mdoel to match with the dataset
+for param in model.parameters():
+    param.requires_grad = False
+
+##seting the classifier to match with our problem 
+model.classifier = torch.nn.Sequential(
+    nn.Dropout(p=0.2, inplace=True),
+    nn.Linear(in_features = 12800, out_features = len(class_names), bias = True).to(device)
+)
+## to print a model summary 
+from torchinfo import summary
+
+# # Get a summary of the model (uncomment for full output)
+# summary(model, 
+#         input_size=(32, 3, 224, 224), # make sure this is "input_size", not "input_shape" (batch_size, color_channels, height, width)
+#         verbose=0,
+#         col_names=["input_size", "output_size", "num_params", "trainable"],
+#         col_width=20,
+#         row_settings=["var_names"]
+# )
+
+
+loss_fn = nn.CrossEntropyLoss()
+optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+
+
+## to track the experiments results and visualise them
+
+from torch.utils.tensorboard import SummaryWriter
+
+# Create a writer with all default settings
+writer = SummaryWriter()
