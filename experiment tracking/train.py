@@ -165,6 +165,23 @@ def train (model : torch.nn.Module,
 #                 device='cuda')
 
 # print(results['test_acc'])
+##initialising the wandb
+
+import wandb
+
+wandb.init(
+    project='experiment tracking learnpytorch.io',
+    config= {'learning_rate':0.001,
+             'architecture': "efficientnet_b0",
+             'dataset' : 'subset of food101',
+             'epochs' : 5
+             }
+)
+food_101_artifact = wandb.Artifact("food101", type="dataset")
+file_path = '/home/ifire/learnpytorh/Custom_Datasets/experiment tracking/data/pizza_steak_sushi'
+food_101_artifact.add_dir(file_path)
+
+
 
 
 EPOCHS = 5
@@ -172,6 +189,8 @@ results  = {'train_loss': [],
                 'test_loss':  [],
                 'train_acc' : [],
                 'test_acc' : []}
+
+wandb.watch(model, loss_fn, log= "all", log_freq=1)
 for epoch in range(EPOCHS):
     train_loss, train_acc = train_step(model=model, dataloader=train_dataloader, loss_fn=loss_fn, optimizer=optimizer,
                                            devise=device)
@@ -180,7 +199,8 @@ for epoch in range(EPOCHS):
     
     
     
-    
+    wandb.log({'train loss': train_loss, 'train_acc': train_acc, 'test_loss': test_loss, 'test_acc': test_acc})
+
     results["train_loss"].append(train_loss)
     results["train_acc"].append(train_acc)
     results["test_loss"].append(test_loss)
