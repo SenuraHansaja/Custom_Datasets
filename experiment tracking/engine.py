@@ -18,7 +18,7 @@ def train_step(model:torch.nn.Module,
 
     for batch, (X, y) in enumerate(dataloader):
         X, y = X.to(devise), y.to(devise)
-
+        model.to(devise)
         y_pred = model(X)
         loss = loss_fn(y_pred, y)
         train_loss += loss.item()
@@ -29,7 +29,7 @@ def train_step(model:torch.nn.Module,
         optimizer.step()
 
         y_pred_classed = torch.argmax(torch.softmax(y_pred, dim=1), dim=1)
-        train_acc += (y_pred == y).sum().item() / len(y_pred)
+        train_acc += (y_pred_classed == y).sum().item() / len(y_pred)
 
 ## to get teh average loss
     train_loss = train_loss /len(dataloader)
@@ -47,13 +47,13 @@ def test_step(model : torch.nn.Module,
     test_loss, test_acc = 0.0, 0.0
 
     with torch.inference_mode():
-        for bath, X, y in enumerate(dataloader):
+        for bath, (X, y) in enumerate(dataloader):
             X, y = X.to(device), y.to(device)
-
+            model.to(device)
             model.eval()
             test_pred_logits = model(X)
 
-            loss = loss_fn(X, y)
+            loss = loss_fn(test_pred_logits, y)
             test_loss += loss.item()
 
             test_pred_labels = torch.argmax(torch.softmax(test_pred_logits, dim=1), dim=1)
