@@ -13,8 +13,8 @@ def create_dataloaders (
         num_workers : int = NUM_WORKERS
 ):
     """create traning and testing dataloader"""
-    train_data =  datasets.ImageFolder(train_dir, transforms=transforms)
-    test_data = datasets.ImageFolder(test_dir, transforms=transforms)
+    train_data =  datasets.ImageFolder(train_dir, transform=transforms)
+    test_data = datasets.ImageFolder(test_dir, transform=transforms)
 
     class_names = train_data.classes
 
@@ -34,4 +34,4 @@ def create_dataloaders (
         pin_memory  = True
     )
 
-    return train_dataloader, test_dataloader, class_names
+    return train_dataloader, test_dataloader, class_names 

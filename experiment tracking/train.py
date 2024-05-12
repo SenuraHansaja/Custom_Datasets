@@ -58,5 +58,17 @@ train_dataloader, test_dataloader, class_names = create_dataloaders(train_dir=tr
                                                                     num_workers = NUM_WORKER)
 
 
+## now we will use the automati tranformations
 
+weights = torchvision.models.EfficientNet_B0_Weights.DEFAULT
+automatic_transformation = weights.transforms()
+print(f'automatic transformation are listed as here {automatic_transformation}')
+
+##now using the auotmatic transformation we will load the dataloaders
+
+train_dataloader, test_dataloader, classes = create_dataloaders(train_dir=train_dir,
+                                                                test_dir=test_dir,
+                                                                transforms=automatic_transformation,
+                                                                batch_size= BATCH_SIZE,
+                                                                num_workers=NUM_WORKER)
 
