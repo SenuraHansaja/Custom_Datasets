@@ -40,8 +40,8 @@ def download_data(
             print(f"[INFO] Unzipping the data {target_file}  data ....")
             zip_ref.extractall(image_path)
 
-    if remove_source == True:
-        os.remove(data_path / target_file)
+    # if remove_source == True:
+    #     os.remove(data_path / target_file)
 
     return image_path
 
