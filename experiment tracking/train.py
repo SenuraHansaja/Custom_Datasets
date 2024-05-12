@@ -19,14 +19,11 @@ except:
 
 
 ## importing the previous data and function calls
-try :
-    import train
-    import engine
-    from get_data import download_data
-    from data_steup import create_dataloaders
+import train
+import engine
+from get_data import download_data
+from data_steup import create_dataloaders
 
-except:
-    print("couldn't load the dependencies")
     
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -57,8 +54,8 @@ print(f'Manually created transforms: {manual_tranforms}')
 train_dataloader, test_dataloader, class_names = create_dataloaders(train_dir=train_dir,
                                                                     test_dir=test_dir,
                                                                     transforms=manual_tranforms,
-                                                                    BATCH_SIZE = BATCH_SIZE,
-                                                                    NUM_WORKER = NUM_WORKER)
+                                                                    batch_size = BATCH_SIZE,
+                                                                    num_workers = NUM_WORKER)
 
 
 
