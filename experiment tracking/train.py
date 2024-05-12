@@ -140,17 +140,17 @@ def train (model : torch.nn.Module,
         results["train_acc"].append(train_acc)
         results["test_loss"].append(test_loss)
         results["test_acc"].append(test_acc)
-        
+        print(f"Epoch {epoch} Train Loss - {train_loss} : Train acc - {train_acc} : Test loss {test_loss} test acc {test_acc}")
         ## adding the accuracy results to the summary writer
-        writer.add_scalars(main_tag ="Accuracy", 
-                          tag_scalar_dict = {"train_acc": train_acc,
-                                             "test_acc": test_acc},
-                          global_step=epoch)
-        ### track the pytorch model architecture
-        writer.add_graph(model=model, 
-                         ## pass in an exampple input to be tracked
-                         input_to_model=torch.randn(32, 3, 224, 224))
-        writer.close()
+        # writer.add_scalars(main_tag ="Accuracy", 
+        #                   tag_scalar_dict = {"train_acc": train_acc,
+        #                                      "test_acc": test_acc},
+        #                   global_step=epoch)
+        # ### track the pytorch model architecture
+        # writer.add_graph(model=model, 
+        #                  ## pass in an exampple input to be tracked
+        #                  input_to_model=torch.randn(32, 3, 224, 224))
+        # writer.close()
         
         return results
     
@@ -163,3 +163,5 @@ results = train(model.to(device),
                 loss_fn=loss_fn,
                 epochs=5,
                 device=device)
+
+print(results['test_acc'])
